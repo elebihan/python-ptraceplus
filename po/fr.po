@@ -1,0 +1,109 @@
+# python-ptraceplus - Ptrace bindings + extra stuff
+# Copyright (C) 2013 Eric Le Bihan
+# This file is distributed under the same license as the python-ptraceplus package.
+# Eric Le Bihan <eric.le.bihan.dev@free.fr>, 2013
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: python-ptraceplus 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-31 12:20+0100\n"
+"PO-Revision-Date: 2013-10-31 12:28+0100\n"
+"Last-Translator: Eric Le Bihan <eric.le.bihan.dev@free.fr>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: scripts/ptraceplus:34
+msgid "Number of processes traced: {}"
+msgstr "Nombre de processus tracés : {}"
+
+#: scripts/ptraceplus:43
+msgid "arguments of the program"
+msgstr "arguments du programme"
+
+#: scripts/ptraceplus:47
+msgid "verbose mode"
+msgstr "mode verbeux"
+
+#: scripts/ptraceplus:51
+msgid "Missing argument(s)"
+msgstr "Argument(s) manquant(s)"
+
+#: ptraceplus/process.py:52
+msgid "Process {} starting"
+msgstr "Processus {} démarre"
+
+#: ptraceplus/process.py:65
+msgid "Process {} forked as {}"
+msgstr "Processus {} forké en {}"
+
+#: ptraceplus/process.py:91
+msgid "Process {} received signal {} {}"
+msgstr "Processus {} a reçu le signal {} {}"
+
+#: ptraceplus/process.py:105
+msgid "Process {} is about to exit with status {}"
+msgstr "Processus {} prêt à se terminer avec le status {}"
+
+#: ptraceplus/process.py:119
+msgid "Process {} has exited with code {}"
+msgstr "Processus {} terminé avec le code {}"
+
+#: ptraceplus/process.py:133
+msgid "Process {} killed by signal {}"
+msgstr "Processus tué par le signal {}"
+
+#: ptraceplus/process.py:171
+msgid "Unknown event for {} ({})"
+msgstr "Évènement inconnu pour {} ({})"
+
+#: ptraceplus/process.py:210
+msgid "Attaching {}"
+msgstr "Attachement de {}"
+
+#: ptraceplus/process.py:216
+msgid "Detaching {}"
+msgstr "Détachement de {}"
+
+#: ptraceplus/tracer.py:117
+msgid "Process {} already registered"
+msgstr "Processus {} déjà enregistré"
+
+#: ptraceplus/tracer.py:118
+msgid "Adding process {}"
+msgstr "Ajout du processus {}"
+
+#: ptraceplus/tracer.py:126
+msgid "Remembering process {}"
+msgstr "Mémorisation du processus {}"
+
+#: ptraceplus/tracer.py:132 ptraceplus/tracer.py:169
+msgid "Removing process {}"
+msgstr "Retrait du processus {}"
+
+#: ptraceplus/tracer.py:136
+msgid "Process not found"
+msgstr "Processus introuvable"
+
+#: ptraceplus/tracer.py:139
+msgid "{} processes still traced"
+msgstr "{} processus toujours tracés"
+
+#: ptraceplus/tracer.py:146
+msgid "Unknown PID ({})"
+msgstr "PID inconnu ({})"
+
+#: ptraceplus/utils.py:57
+msgid "Program not found"
+msgstr "Programme introuvable"
+
+#: ptraceplus/utils.py:75
+msgid "Spawned process {}"
+msgstr "Génération du processus {}"
+
+#: ptraceplus/utils.py:81
+msgid "Failed to trace child process {}"
+msgstr "Impossible de tracer le processus fils"
