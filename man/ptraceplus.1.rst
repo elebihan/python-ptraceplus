@@ -25,7 +25,8 @@ finished (including child processes spawned by the program traced).
 OPTIONS
 =======
 
--v, --verbose       verbose mode
+-v, --verbose               verbose mode
+-S NAME, --syscall=NAME     filter syscall by its name
 
 SEE ALSO
 ========

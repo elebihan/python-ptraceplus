@@ -138,7 +138,7 @@ class Tracer(object):
         proc.detach()
         debug(_("{} processes still traced").format(len(self._procs)))
 
-    def _wait_for_event(self, wanted_pid, blocking=True):
+    def wait_for_event(self, wanted_pid=None, blocking=True):
         flags = 0
         if not blocking:
             flags |= os.WNOHANG
@@ -151,17 +151,13 @@ class Tracer(object):
     def wait_for_signal(self, *signals, **kwargs):
         pid = kwargs.get('pid', None)
         while True:
-            event = self._wait_for_event(pid)
+            event = self.wait_for_event(pid)
             if isinstance(event, SignalEvent):
                 if event.signum in signals or not signals:
                     return event
-            return event
 
     def wait_for_syscall(self, pid=None):
-        signum = signal.SIGTRAP
-        if self._sysgood_enabled:
-            signum |= 0x80
-        return self.wait_for_signal(signum, pid)
+        return self.wait_for_signal(signal.SIGTRAP, pid)
 
     def quit(self):
         while self._procs:

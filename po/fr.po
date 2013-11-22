@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: python-ptraceplus 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-31 12:20+0100\n"
-"PO-Revision-Date: 2013-10-31 12:28+0100\n"
+"POT-Creation-Date: 2013-11-20 18:10+0100\n"
+"PO-Revision-Date: 2013-11-20 18:12+0100\n"
 "Last-Translator: Eric Le Bihan <eric.le.bihan.dev@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,57 +16,85 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: scripts/ptraceplus:34
+#: scripts/ptraceplus:78
 msgid "Number of processes traced: {}"
 msgstr "Nombre de processus tracés : {}"
 
-#: scripts/ptraceplus:43
+#: scripts/ptraceplus:80
+msgid "Syscalls statistics:"
+msgstr "Statistiques des appels système :"
+
+#: scripts/ptraceplus:91
 msgid "arguments of the program"
 msgstr "arguments du programme"
 
-#: scripts/ptraceplus:47
+#: scripts/ptraceplus:95
 msgid "verbose mode"
 msgstr "mode verbeux"
 
-#: scripts/ptraceplus:51
+#: scripts/ptraceplus:101
+msgid "filter syscall by its name"
+msgstr "filtre un appel système par son nom"
+
+#: scripts/ptraceplus:105
 msgid "Missing argument(s)"
 msgstr "Argument(s) manquant(s)"
 
-#: ptraceplus/process.py:52
-msgid "Process {} starting"
-msgstr "Processus {} démarre"
+#: ptraceplus/process.py:53
+msgid "[{}] starting"
+msgstr "[{}] démarre"
 
-#: ptraceplus/process.py:65
-msgid "Process {} forked as {}"
-msgstr "Processus {} forké en {}"
+#: ptraceplus/process.py:66
+msgid "[{}] forked as {}"
+msgstr "[{}] forké en {}"
 
-#: ptraceplus/process.py:91
-msgid "Process {} received signal {} {}"
-msgstr "Processus {} a reçu le signal {} {}"
+#: ptraceplus/process.py:92
+msgid "[{}] received signal {} {}"
+msgstr "[{}] a reçu le signal {} {}"
 
-#: ptraceplus/process.py:105
-msgid "Process {} is about to exit with status {}"
-msgstr "Processus {} prêt à se terminer avec le status {}"
+#: ptraceplus/process.py:106
+msgid "[{}] is about to exit with status {}"
+msgstr "[{}] prêt à se terminer avec le status {}"
 
-#: ptraceplus/process.py:119
-msgid "Process {} has exited with code {}"
-msgstr "Processus {} terminé avec le code {}"
+#: ptraceplus/process.py:120
+msgid "[{}] has exited with code {}"
+msgstr "[{}] terminé avec le code {}"
 
-#: ptraceplus/process.py:133
-msgid "Process {} killed by signal {}"
-msgstr "Processus tué par le signal {}"
+#: ptraceplus/process.py:134
+msgid "[{}] killed by signal {}"
+msgstr "[{}] tué par le signal {}"
 
-#: ptraceplus/process.py:171
+#: ptraceplus/process.py:172
 msgid "Unknown event for {} ({})"
 msgstr "Évènement inconnu pour {} ({})"
 
-#: ptraceplus/process.py:210
+#: ptraceplus/process.py:216
 msgid "Attaching {}"
 msgstr "Attachement de {}"
 
-#: ptraceplus/process.py:216
+#: ptraceplus/process.py:222
 msgid "Detaching {}"
 msgstr "Détachement de {}"
+
+#: ptraceplus/syscalls/core.py:32
+msgid "unknown"
+msgstr "inconnu"
+
+#: ptraceplus/syscalls/core.py:33
+msgid "enter"
+msgstr "entrée"
+
+#: ptraceplus/syscalls/core.py:34
+msgid "exit"
+msgstr "sortie"
+
+#: ptraceplus/syscalls/helpers.py:33
+msgid "Unsupported architecture"
+msgstr "Architecture non supportée"
+
+#: ptraceplus/syscalls/helpers.py:35
+msgid "Unsupported system"
+msgstr "Système non supporté"
 
 #: ptraceplus/tracer.py:117
 msgid "Process {} already registered"
@@ -80,7 +108,7 @@ msgstr "Ajout du processus {}"
 msgid "Remembering process {}"
 msgstr "Mémorisation du processus {}"
 
-#: ptraceplus/tracer.py:132 ptraceplus/tracer.py:169
+#: ptraceplus/tracer.py:132 ptraceplus/tracer.py:165
 msgid "Removing process {}"
 msgstr "Retrait du processus {}"
 

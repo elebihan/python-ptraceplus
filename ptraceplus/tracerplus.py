@@ -19,12 +19,9 @@
 #
 
 import signal
-from collections import namedtuple
 from ptraceplus.tracer import Tracer
 from ptraceplus.process import (SignalEvent, ForkEvent, ExecutionEvent,
                                 ExitingEvent, ExitedEvent, KilledEvent)
-
-TracerPlusStats = namedtuple('TracerPlusStats', ('n_procs'))
 
 class TracerPlus(object):
     """Simple process tracer.
@@ -39,18 +36,17 @@ class TracerPlus(object):
         self._args = arguments
         self._env = env
         self._n_procs = 0
-        self.verbose = False
 
     @property
-    def stats(self):
-        return TracerPlusStats(self._n_procs)
+    def n_procs(self):
+        return self._n_procs
 
     def run(self):
         """Run the tracer"""
 
         tracer = Tracer()
         tracer.fork_enabled = True
-        tracer.exec_enabled = True
+        tracer.exec_enabled = False
         tracer.sysgood_enabled = True
         tracer.spawn_process(self._args, self._env)
 
@@ -59,9 +55,8 @@ class TracerPlus(object):
         while True:
             if not tracer.has_processes:
                 break
-            event = tracer.wait_for_syscall()
-            if self.verbose:
-                print(event)
+            event = tracer.wait_for_event()
+            self._on_event(event)
             if isinstance(event, SignalEvent):
                 # The tracer can be notified of a child receiving a SIGSTOP
                 # before the notification of the fork!
@@ -70,27 +65,50 @@ class TracerPlus(object):
                         proc = tracer.remember_process(event.pid)
                     else:
                         proc = tracer[event.pid]
-                    proc.cont()
+                    proc.syscall()
                 else:
                     proc = tracer[event.pid]
+                    if event.is_syscall:
+                        if proc.system_call is None:
+                            syscall = proc.prepare_syscall_enter()
+                            self._on_syscall_enter(syscall)
+                        else:
+                            syscall = proc.prepare_syscall_exit()
+                            self._on_syscall_exit(syscall)
                     proc.syscall(event.signum)
             elif isinstance(event, ForkEvent):
                 self._n_procs += 1
                 parent = tracer[event.pid]
                 tracer.remember_process(event.child_pid, parent)
-                parent.cont()
+                parent.syscall()
             elif isinstance(event, ExitingEvent):
+                self._on_exiting(event)
                 proc = tracer[event.pid]
                 proc.cont()
-                tracer.remove_process(event.pid)
             elif isinstance(event, KilledEvent):
                 pass
             elif isinstance(event, ExitedEvent):
-                pass
+                self._on_exit(event)
+                tracer.remove_process(event.pid)
             elif isinstance(event, ExecutionEvent):
                 proc = tracer[event.pid]
                 proc.syscall()
 
         tracer.quit()
+
+    def _on_event(self, event):
+        pass
+
+    def _on_syscall_enter(self, syscall):
+        pass
+
+    def _on_syscall_exit(self, syscall):
+        pass
+
+    def _on_exiting(self, event):
+        pass
+
+    def _on_exit(self, event):
+        pass
 
 # vim: ts=4 sts=4 sw=4 sta et ai
