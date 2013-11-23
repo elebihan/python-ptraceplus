@@ -23,64 +23,12 @@ import argparse
 import logging
 from ptraceplus import __version__
 from ptraceplus.common import setup_i18n
-from ptraceplus.syscalls.helpers import convert_names, format_syscall
-from ptraceplus.tracerplus import TracerPlus
+from ptraceplus.extra import SyscallTracer, format_tracer_stats
 from gettext import gettext as _
 
 logging.basicConfig()
 
 setup_i18n()
-
-class TracerStats:
-    __slots__ = ['n_procs', 'results']
-
-    def __init__(self, n, r):
-        self.n_procs = n
-        self.results = r
-
-class Tracer(TracerPlus):
-    def __init__(self, args, verbose=False):
-        TracerPlus.__init__(self, args)
-        self._verbose = verbose
-        self._results = {}
-        self._selection = []
-
-    @property
-    def stats(self):
-        results = [(n, c) for n, c in self._results.items()]
-        return TracerStats(self.n_procs, sorted(results))
-
-    def filter_syscalls(self, names):
-        self._selection = convert_names(names)
-
-    def _on_event(self, event):
-        if self._verbose:
-            print(event)
-
-    def _on_syscall_enter(self, syscall):
-        if self._verbose or syscall.num in self._selection:
-            syscall.collect_params()
-        if self._verbose:
-            txt = "[{}] {} = ?"
-            print(txt.format(syscall.pid, format_syscall(syscall, True)))
-
-    def _on_syscall_exit(self, syscall):
-        if self._verbose or syscall.num in self._selection:
-            res = syscall.collect_result()
-            if not syscall.name in self._results:
-                self._results[syscall.name] = 0
-            else:
-                self._results[syscall.name] += 1
-            txt = "[{}] {} = {}"
-            print(txt.format(syscall.pid, format_syscall(syscall, True), res))
-
-def format_tracer_stats(stats):
-    print("----")
-    print(_("Number of processes traced: {}").format(stats.n_procs))
-    if stats.results:
-        print(_("Syscalls statistics:"))
-    for n, c in stats.results:
-        print(" {:<24}: {}".format(n, c))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -105,7 +53,7 @@ if __name__ == '__main__':
     if len(args.arguments) == 0:
         parser.error(_('Missing argument(s)'))
 
-    tracer = Tracer(args.arguments, args.verbose)
+    tracer = SyscallTracer(args.arguments, args.verbose)
     tracer.filter_syscalls(args.syscalls)
     tracer.run()
     format_tracer_stats(tracer.stats)
