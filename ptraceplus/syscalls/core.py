@@ -58,7 +58,7 @@ class SyscallParam(object):
         self.name = n
         self.value = v
         self.pvalue = None
-        if 'name' in self.name:
+        if self.name in ('filename', 'pathname', 'oldname', 'newname'):
             self._t = SYSCALL_PARAM_TYPE_STR
         elif '*' in self.type:
             self._t = SYSCALL_PARAM_TYPE_ADDR
