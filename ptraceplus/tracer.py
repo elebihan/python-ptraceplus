@@ -104,9 +104,9 @@ class Tracer(object):
                               from kernel space. It is unset if it comes
                               from user space""")
 
-    def spawn_process(self, args, env=None):
+    def spawn_process(self, args, env=None, quiet=True):
         flags = 0
-        pid = spawn_child(args, env)
+        pid = spawn_child(args, env, quiet)
         pid, status = os.waitpid(pid, flags)
         proc = self.add_process(pid)
         proc.cont()

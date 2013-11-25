@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: python-ptraceplus 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-20 18:10+0100\n"
-"PO-Revision-Date: 2013-11-20 18:12+0100\n"
+"POT-Creation-Date: 2013-11-25 18:01+0100\n"
+"PO-Revision-Date: 2013-11-25 18:02+0100\n"
 "Last-Translator: Eric Le Bihan <eric.le.bihan.dev@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,29 +16,49 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: scripts/ptraceplus:78
-msgid "Number of processes traced: {}"
-msgstr "Nombre de processus tracés : {}"
-
-#: scripts/ptraceplus:80
-msgid "Syscalls statistics:"
-msgstr "Statistiques des appels système :"
-
-#: scripts/ptraceplus:91
+#: scripts/ptraceplus:41
 msgid "arguments of the program"
 msgstr "arguments du programme"
 
-#: scripts/ptraceplus:95
-msgid "verbose mode"
-msgstr "mode verbeux"
+#: scripts/ptraceplus:46
+msgid "compute some statistics"
+msgstr "calcule des statistiques"
 
-#: scripts/ptraceplus:101
-msgid "filter syscall by its name"
+#: scripts/ptraceplus:50
+msgid "trace all events"
+msgstr "trace tous les événements"
+
+#: scripts/ptraceplus:52
+msgid "set output file"
+msgstr "définit le fichier de sortie"
+
+#: scripts/ptraceplus:58
+msgid "filter syscall by name"
 msgstr "filtre un appel système par son nom"
 
-#: scripts/ptraceplus:105
+#: scripts/ptraceplus:64
+msgid "filter program by name"
+msgstr "filtre un programme par son nom"
+
+#: scripts/ptraceplus:68
 msgid "Missing argument(s)"
 msgstr "Argument(s) manquant(s)"
+
+#: scripts/ptraceplus:78
+msgid "Error: {}"
+msgstr "Erreur : {}"
+
+#: ptraceplus/extra.py:119
+msgid "Number of processes traced: {}"
+msgstr "Nombre de processus tracés : {}"
+
+#: ptraceplus/extra.py:120
+msgid "Number of processes filtered: {}"
+msgstr "Nombre de processus filtrés : {}"
+
+#: ptraceplus/extra.py:122
+msgid "Syscalls statistics:"
+msgstr "Statistiques des appels système :"
 
 #: ptraceplus/process.py:53
 msgid "[{}] starting"
@@ -87,6 +107,10 @@ msgstr "entrée"
 #: ptraceplus/syscalls/core.py:34
 msgid "exit"
 msgstr "sortie"
+
+#: ptraceplus/syscalls/core.py:187
+msgid "can not get '{} {}' for {}() at {:#x}"
+msgstr "impossible de lire '{} {}' pour {}() en {:#x}"
 
 #: ptraceplus/syscalls/helpers.py:33
 msgid "Unsupported architecture"

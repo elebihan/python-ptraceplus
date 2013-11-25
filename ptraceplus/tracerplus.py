@@ -26,15 +26,19 @@ from ptraceplus.process import (SignalEvent, ForkEvent, ExecutionEvent,
 class TracerPlus(object):
     """Simple process tracer.
 
-    :param arguments: arguments of the process to execute and trace.
+    :param arguments: arguments of the program to execute and trace.
     :type arguments: list of str.
 
     :param env: environment variables for the process.
     :type env: mapping between strings
+
+    :param quiet: if True, the output of the program will not be printed.
+    :type quiet: bool
     """
-    def __init__(self, arguments, env=None):
+    def __init__(self, arguments, env=None, quiet=True):
         self._args = arguments
         self._env = env
+        self._quiet = quiet
         self._n_procs = 0
 
     @property
@@ -48,9 +52,10 @@ class TracerPlus(object):
         tracer.fork_enabled = True
         tracer.exec_enabled = False
         tracer.sysgood_enabled = True
-        tracer.spawn_process(self._args, self._env)
 
+        proc = tracer.spawn_process(self._args, self._env, self._quiet)
         self._n_procs += 1
+        self._on_tracing_started(proc)
 
         while True:
             if not tracer.has_processes:
@@ -95,6 +100,9 @@ class TracerPlus(object):
                 proc.syscall()
 
         tracer.quit()
+
+    def _on_tracing_started(self, proc):
+        pass
 
     def _on_event(self, event):
         pass

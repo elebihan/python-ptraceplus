@@ -649,7 +649,7 @@ ptrace_getstr(PyObject *self, PyObject *args)
                 errno = 0;
                 result = ptrace(PTRACE_PEEKDATA, pid, tmp, NULL);
                 if (errno != 0)
-                        return NULL;
+                        return PyErr_SetFromErrno(PyExc_OSError);
                 for (i = 0; i < sizeof(long); i++) {
                         if (((result >> (i * 8)) & 0xff) == '\0') {
                                 stop = 1;
@@ -662,8 +662,11 @@ ptrace_getstr(PyObject *self, PyObject *args)
         }
 
         str = (char*)calloc(size + 1, sizeof(char));
-        if (str == NULL)
+        if (str == NULL) {
+                PyErr_SetString(PyExc_MemoryError,
+                                "not enough memory for string");
                 return NULL;
+        }
 
         if (_ptrace_getdata(pid, addr, str, size + 1) == 0) {
                 obj = PyUnicode_FromStringAndSize(str, size);

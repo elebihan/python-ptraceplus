@@ -183,9 +183,9 @@ class Syscall(object):
         if param.is_string:
             try:
                 param.pvalue = ptrace.getstr(self._pid, v)
-            except UnicodeDecodeError:
-                msg = _("failed to collect parameter '{} {}' for {}()")
-                raise SyscallParamError(msg.format(t, n, self.name))
+            except:
+                msg = _("can not get '{} {}' for {}() at {:#x}")
+                raise SyscallParamError(msg.format(t, n, self.name, v))
         return param
 
 # vim: ts=4 sts=4 sw=4 sta et ai
