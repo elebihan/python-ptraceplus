@@ -50,7 +50,7 @@ class TracerPlus(object):
 
         tracer = Tracer()
         tracer.fork_enabled = True
-        tracer.exec_enabled = False
+        tracer.exec_enabled = True
         tracer.sysgood_enabled = True
 
         proc = tracer.spawn_process(self._args, self._env, self._quiet)
@@ -67,7 +67,7 @@ class TracerPlus(object):
                 # before the notification of the fork!
                 if event.signum == signal.SIGSTOP:
                     if event.pid not in tracer:
-                        proc = tracer.remember_process(event.pid)
+                        proc = tracer.keep_process(event.pid)
                     else:
                         proc = tracer[event.pid]
                     proc.syscall()
@@ -84,14 +84,15 @@ class TracerPlus(object):
             elif isinstance(event, ForkEvent):
                 self._n_procs += 1
                 parent = tracer[event.pid]
-                tracer.remember_process(event.child_pid, parent)
+                proc = tracer.keep_process(event.child_pid, parent)
                 parent.syscall()
             elif isinstance(event, ExitingEvent):
                 self._on_exiting(event)
                 proc = tracer[event.pid]
-                proc.cont()
+                proc.syscall()
             elif isinstance(event, KilledEvent):
-                pass
+                self._on_killed(event)
+                tracer.remove_process(event.pid)
             elif isinstance(event, ExitedEvent):
                 self._on_exit(event)
                 tracer.remove_process(event.pid)
@@ -117,6 +118,9 @@ class TracerPlus(object):
         pass
 
     def _on_exit(self, event):
+        pass
+
+    def _on_killed(self, event):
         pass
 
 # vim: ts=4 sts=4 sw=4 sta et ai

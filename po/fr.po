@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: python-ptraceplus 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-25 18:01+0100\n"
-"PO-Revision-Date: 2013-11-25 18:02+0100\n"
+"POT-Creation-Date: 2013-11-26 17:15+0100\n"
+"PO-Revision-Date: 2013-11-26 17:18+0100\n"
 "Last-Translator: Eric Le Bihan <eric.le.bihan.dev@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -128,23 +128,27 @@ msgstr "Processus {} déjà enregistré"
 msgid "Adding process {}"
 msgstr "Ajout du processus {}"
 
-#: ptraceplus/tracer.py:126
+#: ptraceplus/tracer.py:127
 msgid "Remembering process {}"
+msgstr "Rappel du processus {}"
+
+#: ptraceplus/tracer.py:130
+msgid "Keeping process {}"
 msgstr "Mémorisation du processus {}"
 
-#: ptraceplus/tracer.py:132 ptraceplus/tracer.py:165
+#: ptraceplus/tracer.py:136 ptraceplus/tracer.py:169
 msgid "Removing process {}"
 msgstr "Retrait du processus {}"
 
-#: ptraceplus/tracer.py:136
+#: ptraceplus/tracer.py:140
 msgid "Process not found"
 msgstr "Processus introuvable"
 
-#: ptraceplus/tracer.py:139
+#: ptraceplus/tracer.py:143
 msgid "{} processes still traced"
 msgstr "{} processus toujours tracés"
 
-#: ptraceplus/tracer.py:146
+#: ptraceplus/tracer.py:150
 msgid "Unknown PID ({})"
 msgstr "PID inconnu ({})"
 

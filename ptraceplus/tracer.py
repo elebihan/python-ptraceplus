@@ -109,21 +109,25 @@ class Tracer(object):
         pid = spawn_child(args, env, quiet)
         pid, status = os.waitpid(pid, flags)
         proc = self.add_process(pid)
-        proc.cont()
+        proc.syscall()
         return proc
 
     def add_process(self, pid, is_attached=True, parent=None):
         if pid in self._procs:
             raise TracerError(_('Process {} already registered').format(pid))
         debug(_("Adding process {}").format(pid))
-        proc = self.remember_process(pid, parent)
+        proc = self.keep_process(pid, parent)
         if not is_attached:
             proc.attach()
         proc.options = self._options
         return proc
 
-    def remember_process(self, pid, parent=None):
-        debug(_("Remembering process {}").format(pid))
+    def keep_process(self, pid, parent=None):
+        if pid in self._procs:
+            debug(_("Remembering process {}").format(pid))
+            return self._procs[pid]
+
+        debug(_("Keeping process {}").format(pid))
         proc = TracedProcess(pid, parent)
         self._procs[pid] = proc
         return proc
