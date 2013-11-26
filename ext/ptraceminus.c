@@ -187,6 +187,54 @@ RegisterStore_setitem(PyObject *self, PyObject *key, PyObject *value)
         return PyDict_SetItem(store->regs, key, value);
 }
 
+static PyObject*
+RegisterStore_str(PyObject *self)
+{
+        RegisterStore *store = (RegisterStore*)self;
+        PyObject *obj = NULL;
+        PyObject *bytes = NULL;
+        PyObject *key = NULL, *value = NULL;
+        Py_ssize_t pos = 0;
+        Py_ssize_t length = 0;
+        Py_ssize_t size = 0;
+        char *str = NULL, *tmp = NULL;
+        long regval = 0;
+
+        while (PyDict_Next(store->regs, &pos, &key, &value)) {
+                bytes = PyUnicode_AsASCIIString(key);
+                length += PyBytes_Size(bytes) + 1 + 2 + sizeof(long) * 2 + 1;
+                Py_DECREF(bytes);
+        }
+
+        str = (char*)calloc(length + 1, sizeof(char));
+        if (str == NULL) {
+                PyErr_SetString(PyExc_MemoryError,
+                                "not enough memory for string");
+                return NULL;
+        }
+
+        tmp = str;
+        pos = 0;
+
+        while (PyDict_Next(store->regs, &pos, &key, &value)) {
+                bytes = PyUnicode_AsASCIIString(key);
+                size = PyBytes_Size(bytes) + 1 + 2 + sizeof(long) * 2 + 1;
+                regval = PyLong_AsLong(value);
+                snprintf(tmp,
+                         size + 1,
+                         "%s=0x%08x ",
+                         PyBytes_AsString(bytes),
+                         (unsigned int)regval);
+                Py_DECREF(bytes);
+                tmp += size;
+        }
+
+        obj = PyUnicode_FromStringAndSize(str, length - 1);
+
+        free(str);
+        return obj;
+}
+
 static PyMemberDef
 RegisterStore_members[] = {
         { "_regs", T_OBJECT, offsetof(RegisterStore, regs), 0,
@@ -239,7 +287,7 @@ RegisterStoreType = {
         &RegisterStore_as_mapping,                      /* tp_as_mapping */
         0,                                              /* tp_hash */
         0,                                              /* tp_call */
-        0,                                              /* tp_str */
+        RegisterStore_str,                              /* tp_str */
         0,                                              /* tp_getattro */
         0,                                              /* tp_setattro */
         0,                                              /* tp_as_buffer */
