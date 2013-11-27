@@ -116,14 +116,14 @@ class SyscallTracer(TracerPlus):
             self._log(txt.format(syscall.pid, format_syscall(syscall, True), res))
 
 def format_tracer_stats(stats):
-    print("----")
-    print(_("Number of processes traced: {}").format(stats.n_traced))
-    print(_("Number of processes filtered: {}").format(stats.n_filtered))
+    text = "----\n"
+    text += _("Number of processes traced: {}\n").format(stats.n_traced)
+    text += _("Number of processes filtered: {}\n").format(stats.n_filtered)
     if stats.results:
-        print(_("Syscalls statistics:"))
+        text += _("Syscalls statistics:\n")
     for n, c in stats.results:
-        print(" {:<24}: {}".format(n, c))
-
+        text += " {:<24}: {}\n".format(n, c)
+    return text
 
 def format_process_info(info, with_files=True):
         text = " - pid: {}\n".format(info.pid)

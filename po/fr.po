@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: python-ptraceplus 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-27 17:17+0100\n"
-"PO-Revision-Date: 2013-11-27 17:19+0100\n"
+"POT-Creation-Date: 2013-11-27 18:00+0100\n"
+"PO-Revision-Date: 2013-11-27 18:01+0100\n"
 "Last-Translator: Eric Le Bihan <eric.le.bihan.dev@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -36,37 +36,37 @@ msgstr "calcule des statistiques"
 msgid "trace all events"
 msgstr "trace tous les événements"
 
-#: scripts/ptraceplus:62
+#: scripts/ptraceplus:63
 msgid "set output file"
 msgstr "définit le fichier de sortie"
 
-#: scripts/ptraceplus:68
+#: scripts/ptraceplus:69
 msgid "filter syscall by name"
 msgstr "filtre un appel système par son nom"
 
-#: scripts/ptraceplus:74
+#: scripts/ptraceplus:75
 msgid "filter program by name"
 msgstr "filtre un programme par son nom"
 
-#: scripts/ptraceplus:78
+#: scripts/ptraceplus:79
 msgid "Missing argument(s)"
 msgstr "Argument(s) manquant(s)"
 
-#: scripts/ptraceplus:88
+#: scripts/ptraceplus:89
 msgid "Error: {}"
 msgstr "Erreur : {}"
 
 #: ptraceplus/extra.py:120
-msgid "Number of processes traced: {}"
-msgstr "Nombre de processus tracés : {}"
+msgid "Number of processes traced: {}\n"
+msgstr "Nombre de processus tracés : {}\n"
 
 #: ptraceplus/extra.py:121
-msgid "Number of processes filtered: {}"
-msgstr "Nombre de processus filtrés : {}"
+msgid "Number of processes filtered: {}\n"
+msgstr "Nombre de processus filtrés : {}\n"
 
 #: ptraceplus/extra.py:123
-msgid "Syscalls statistics:"
-msgstr "Statistiques des appels système :"
+msgid "Syscalls statistics:\n"
+msgstr "Statistiques des appels système :\n"
 
 #: ptraceplus/process.py:53
 msgid "[{}] starting"
