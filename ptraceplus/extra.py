@@ -22,6 +22,7 @@
 Collections of tracers
 """
 
+import os
 from .tracerplus import TracerPlus
 from .syscalls.helpers import format_syscall, convert_names
 from gettext import gettext as _
@@ -123,5 +124,106 @@ def format_tracer_stats(stats):
     for n, c in stats.results:
         print(" {:<24}: {}".format(n, c))
 
+
+def format_process_info(info, with_files=True):
+        text = " - pid: {}\n".format(info.pid)
+        text += "   ppid: {}\n".format(info.ppid)
+        text += "   cmd: {}\n".format(' '.join(info.args))
+        if with_files:
+            text += "   read:\n"
+            for f in set(info.rfiles):
+                text += "     - {}\n".format(f)
+            text += "   write:\n"
+            for f in set(info.wfiles):
+                text += "     - {}\n".format(f)
+        text += "   code: {}\n".format(info.code)
+        return text
+
+class ProcessInfo:
+    def __init__(self, pid, ppid=0):
+        self.pid = pid
+        self.ppid = ppid
+        self.args = []
+        self.rfiles = []
+        self.wfiles = []
+        self.code = 0
+        self.fname = None
+        self.faccess = None
+        self.allowed = False
+
+class ExecutionTracer(TracerPlus):
+    def __init__(self, args, quiet=True, stream=None):
+        TracerPlus.__init__(self, args, quiet=quiet)
+        self._os = stream
+        self._progs = []
+        self._infos = {}
+        self.with_files = False
+
+    def filter_programs(self, names):
+        for name in names:
+            self._progs.append(name)
+
+    def _log(self, message):
+        if self._os:
+            self._os.write(message + '\n')
+        else:
+            print(message)
+
+    def _on_tracing_started(self, proc):
+        self._infos[proc.pid] = ProcessInfo(proc.pid, -1)
+
+    def _on_fork(self, event):
+        try:
+            info = self._infos[event.child_pid]
+            info.ppid = event.pid
+        except KeyError:
+            info = ProcessInfo(event.child_pid, event.pid)
+            self._infos[event.child_pid] = info
+
+    def _on_syscall_enter(self, syscall):
+        if syscall.name == 'execve':
+            params = syscall.collect_params()
+            prog = params[0].pvalue
+            if self._progs:
+                allowed = False
+                for name in self._progs:
+                    if prog.endswith(name):
+                       allowed = True
+                       break
+            else:
+                allowed = True
+
+            try:
+                info = self._infos[syscall.pid]
+            except KeyError:
+                info = ProcessInfo(syscall.pid)
+                self._infos[syscall.pid] = info
+            info.allowed = allowed
+            info.args = [prog]
+
+        elif syscall.name == 'open' and self.with_files:
+            info = self._infos[syscall.pid]
+            if info.allowed:
+                params = syscall.collect_params()
+                info.fname = params[0].pvalue
+                info.faccess =  params[1].value
+
+    def _on_syscall_exit(self, syscall):
+        if syscall.name == 'open' and self.with_files:
+            info = self._infos[syscall.pid]
+            if info.allowed:
+                result = syscall.collect_result()
+                if result > 0:
+                    if info.faccess & os.O_WRONLY or info.faccess & os.O_RDWR:
+                        info.wfiles.append(info.fname)
+                    else:
+                        info.rfiles.append(info.fname)
+
+    def _on_exit(self, event):
+        info = self._infos[event.pid]
+        info.code = event.code
+        if info.allowed and info.args:
+            self._log(format_process_info(info, self.with_files))
+        del self._infos[event.pid]
 
 # vim: ts=4 sts=4 sw=4 sta et ai

@@ -82,6 +82,7 @@ class TracerPlus(object):
                             self._on_syscall_exit(syscall)
                     proc.syscall(event.signum)
             elif isinstance(event, ForkEvent):
+                self._on_fork(event)
                 self._n_procs += 1
                 parent = tracer[event.pid]
                 proc = tracer.keep_process(event.child_pid, parent)
@@ -121,6 +122,9 @@ class TracerPlus(object):
         pass
 
     def _on_killed(self, event):
+        pass
+
+    def _on_fork(self, event):
         pass
 
 # vim: ts=4 sts=4 sw=4 sta et ai

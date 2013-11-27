@@ -24,7 +24,7 @@ import argparse
 import logging
 from ptraceplus import __version__
 from ptraceplus.common import setup_i18n
-from ptraceplus.extra import SyscallTracer, format_tracer_stats
+from ptraceplus.extra import SyscallTracer, format_tracer_stats, ExecutionTracer
 from gettext import gettext as _
 
 logging.basicConfig()
@@ -39,6 +39,16 @@ if __name__ == '__main__':
     parser.add_argument('arguments',
                         nargs=argparse.REMAINDER,
                         help=_('arguments of the program'))
+    parser.add_argument('--execution', '-x',
+                        action='store_true',
+                        dest='exec_only',
+                        default=False,
+                        help=_('trace only execution'))
+    parser.add_argument('--files', '-f',
+                        action='store_true',
+                        dest='with_files',
+                        default=False,
+                        help=_('trace file access during execution'))
     parser.add_argument('--stats', '-s',
                         action='store_true',
                         dest='with_stats',
@@ -49,6 +59,7 @@ if __name__ == '__main__':
                         default=False,
                         help=_('trace all events'))
     parser.add_argument('--output', '-o',
+                        metavar='FILE',
                         help=_('set output file'))
     parser.add_argument('--syscall', '-S',
                         metavar='NAME',
@@ -79,15 +90,24 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        tracer = SyscallTracer(args.arguments, quiet, args.full, output)
-        tracer.filter_syscalls(args.syscalls)
+        if args.exec_only:
+            tracer = ExecutionTracer(args.arguments,
+                                     quiet,
+                                     output)
+            tracer.with_files = args.with_files
+        else:
+            tracer = SyscallTracer(args.arguments,
+                                   quiet,
+                                   args.full,
+                                   output)
+            tracer.filter_syscalls(args.syscalls)
         tracer.filter_programs(args.programs)
         tracer.run()
     finally:
         if output is not sys.stdout:
             output.close()
 
-    if args.with_stats:
+    if args.with_stats and not args.exec_only:
         format_tracer_stats(tracer.stats)
 
 # vim: ts=4 sts=4 sw=4 sta et ai

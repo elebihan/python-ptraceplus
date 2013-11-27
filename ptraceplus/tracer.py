@@ -127,7 +127,11 @@ class Tracer(object):
             debug(_("Remembering process {}").format(pid))
             return self._procs[pid]
 
-        debug(_("Keeping process {}").format(pid))
+        if parent:
+            details = "({})".format(parent.pid)
+        else:
+            details = ''
+        debug(_("Keeping process {} {}").format(pid, details))
         proc = TracedProcess(pid, parent)
         self._procs[pid] = proc
         return proc
