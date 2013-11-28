@@ -158,6 +158,7 @@ class ExecutionTracer(TracerPlus):
         self._progs = []
         self._infos = {}
         self.with_files = False
+        self.with_args = False
 
     def filter_programs(self, names):
         for name in names:
@@ -200,6 +201,8 @@ class ExecutionTracer(TracerPlus):
                 self._infos[syscall.pid] = info
             info.allowed = allowed
             info.args = [prog]
+            if self.with_args:
+                info.args += params[1].pvalue[1:]
 
         elif syscall.name == 'open' and self.with_files:
             info = self._infos[syscall.pid]

@@ -34,8 +34,8 @@ _SYSCALL_STATES = {
     SYSCALL_STATE_EXIT: _('exit'),
 }
 
-(SYSCALL_PARAM_TYPE_STR, SYSCALL_PARAM_TYPE_ADDR, SYSCALL_PARAM_TYPE_NB) = \
-        range(0, 3)
+(SYSCALL_PARAM_TYPE_STR, SYSCALL_PARAM_TYPE_STRV, SYSCALL_PARAM_TYPE_ADDR,
+ SYSCALL_PARAM_TYPE_NB) = range(0, 4)
 
 class SyscallParamError(Exception):
     """Error raised when collecting system call parameter fails"""
@@ -60,6 +60,8 @@ class SyscallParam(object):
         self.pvalue = None
         if self.name in ('filename', 'pathname', 'oldname', 'newname'):
             self._t = SYSCALL_PARAM_TYPE_STR
+        elif self.name in ('argv',):
+            self._t = SYSCALL_PARAM_TYPE_STRV
         elif '*' in self.type:
             self._t = SYSCALL_PARAM_TYPE_ADDR
         else:
@@ -69,6 +71,9 @@ class SyscallParam(object):
         if self.pvalue and self.is_string:
             fmt = "\"{}\""
             value = self.pvalue.replace('\n', '\\n')
+        elif self.pvalue and self.is_stringv:
+            fmt = "{}"
+            value = self.pvalue
         else:
             if self.is_address:
                 fmt = "{:#x}"
@@ -80,6 +85,13 @@ class SyscallParam(object):
     @property
     def is_string(self):
         if self._t == SYSCALL_PARAM_TYPE_STR:
+            return True
+        else:
+            return False
+
+    @property
+    def is_stringv(self):
+        if self._t == SYSCALL_PARAM_TYPE_STRV:
             return True
         else:
             return False
@@ -180,12 +192,14 @@ class Syscall(object):
 
     def _format_param(self, t, n, v):
         param = SyscallParam(t, n, v)
-        if param.is_string:
-            try:
+        try:
+            if param.is_string:
                 param.pvalue = ptrace.getstr(self._pid, v)
-            except:
-                msg = _("can not get '{} {}' for {}() at {:#x}")
-                raise SyscallParamError(msg.format(t, n, self.name, v))
+            elif param.is_stringv:
+                param.pvalue = ptrace.getstrv(self._pid, v)
+        except:
+            msg = _("can not get '{} {}' for {}() at {:#x}")
+            raise SyscallParamError(msg.format(t, n, self.name, v))
         return param
 
 # vim: ts=4 sts=4 sw=4 sta et ai

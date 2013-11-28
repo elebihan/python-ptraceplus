@@ -44,6 +44,7 @@ with *-j1* option).
 OPTIONS
 =======
 
+-a, --args                  get arguments when tracing execution
 -f, --files                 trace file access during execution
 -o FILE, --output=FILE      set output file
 -s, --stats                 compute some statistics

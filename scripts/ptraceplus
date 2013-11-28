@@ -44,6 +44,11 @@ if __name__ == '__main__':
                         dest='exec_only',
                         default=False,
                         help=_('trace only execution'))
+    parser.add_argument('--args', '-a',
+                        action='store_true',
+                        dest='with_args',
+                        default=False,
+                        help=_('get arguments during execution'))
     parser.add_argument('--files', '-f',
                         action='store_true',
                         dest='with_files',
@@ -95,6 +100,7 @@ if __name__ == '__main__':
                                      quiet,
                                      output)
             tracer.with_files = args.with_files
+            tracer.with_args = args.with_args
         else:
             tracer = SyscallTracer(args.arguments,
                                    quiet,

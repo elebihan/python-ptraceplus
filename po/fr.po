@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: python-ptraceplus 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-27 18:00+0100\n"
-"PO-Revision-Date: 2013-11-27 18:01+0100\n"
+"POT-Creation-Date: 2013-11-28 17:38+0100\n"
+"PO-Revision-Date: 2013-11-28 17:39+0100\n"
 "Last-Translator: Eric Le Bihan <eric.le.bihan.dev@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -25,34 +25,38 @@ msgid "trace only execution"
 msgstr "trace seulement l'exécution"
 
 #: scripts/ptraceplus:51
+msgid "get arguments during execution"
+msgstr "récupère les arguments lors de l'exécution"
+
+#: scripts/ptraceplus:56
 msgid "trace file access during execution"
 msgstr "trace les accès fichiers lors de l'exécution"
 
-#: scripts/ptraceplus:56
+#: scripts/ptraceplus:61
 msgid "compute some statistics"
 msgstr "calcule des statistiques"
 
-#: scripts/ptraceplus:60
+#: scripts/ptraceplus:65
 msgid "trace all events"
 msgstr "trace tous les événements"
 
-#: scripts/ptraceplus:63
+#: scripts/ptraceplus:68
 msgid "set output file"
 msgstr "définit le fichier de sortie"
 
-#: scripts/ptraceplus:69
+#: scripts/ptraceplus:74
 msgid "filter syscall by name"
 msgstr "filtre un appel système par son nom"
 
-#: scripts/ptraceplus:75
+#: scripts/ptraceplus:80
 msgid "filter program by name"
 msgstr "filtre un programme par son nom"
 
-#: scripts/ptraceplus:79
+#: scripts/ptraceplus:84
 msgid "Missing argument(s)"
 msgstr "Argument(s) manquant(s)"
 
-#: scripts/ptraceplus:89
+#: scripts/ptraceplus:94
 msgid "Error: {}"
 msgstr "Erreur : {}"
 
@@ -116,7 +120,7 @@ msgstr "entrée"
 msgid "exit"
 msgstr "sortie"
 
-#: ptraceplus/syscalls/core.py:187
+#: ptraceplus/syscalls/core.py:201
 msgid "can not get '{} {}' for {}() at {:#x}"
 msgstr "impossible de lire '{} {}' pour {}() en {:#x}"
 
