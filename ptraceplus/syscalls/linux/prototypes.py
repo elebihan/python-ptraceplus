@@ -369,7 +369,7 @@ SYSCALL_PROTOS = {
     'msgrcv': [('int', 'msqid'), ('struct msgbuf*', 'msgp'), ('size_t', 'msgsz'), ('long', 'msgtyp'), ('int', 'msgfl')],
     'alarm': [('unsigned int', 'seconds')],
     'uselib': [('const char*', 'library')],
-    'execve': [('const char*', 'filename'), ('const char**', 'argv'), ('const char**',' envp')],
+    'execve': [('const char*', 'filename'), ('const char**', 'argv'), ('const char**','envp')],
     'io_setup': [('unsigned', 'nr_events'), ('aio_context_t*', 'ctxp')],
     'io_destroy': [('aio_context_t', 'ctx')],
     'io_submit': [('aio_context_t', 'ctx_id'), ('long', 'nr'), ('struct iocb**', 'iocbp')],
