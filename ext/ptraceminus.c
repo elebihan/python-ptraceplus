@@ -646,7 +646,7 @@ ptrace_getscnr(PyObject *self, PyObject *args)
 }
 
 static int
-_ptrace_getdata(pid_t pid, long addr, void *buffer, size_t size)
+_ptrace_getdata(pid_t pid, void *addr, void *buffer, size_t size)
 {
         size_t rem = size % sizeof(long);
         size_t count = 0;
@@ -665,31 +665,22 @@ _ptrace_getdata(pid_t pid, long addr, void *buffer, size_t size)
                 }
                 size -= count;
                 tmp += count;
-                addr += 4;
+                addr = (void*)(((long)addr) + sizeof(long));
         }
 
         return 0;
 }
 
-PyDoc_STRVAR(ptrace_getstr__doc__,
-	     "getstr(pid, addr) -> str\n\n"
-	     "Reads a character string stored at given address.");
-
 static PyObject*
-ptrace_getstr(PyObject *self, PyObject *args)
+_ptrace_getstr(pid_t pid, void *addr)
 {
-        pid_t pid = 0;
-        long addr = 0;
-        long tmp = 0;
+        void *tmp = NULL;
         long result = 0;
         char *str = NULL;
         size_t size = 0;
         unsigned char stop = 0;
         PyObject *obj = NULL;
         int i;
-
-        if (!PyArg_ParseTuple(args, "ik", &pid, &addr))
-                return NULL;
 
         tmp = addr;
 
@@ -706,7 +697,7 @@ ptrace_getstr(PyObject *self, PyObject *args)
                                 size++;
                         }
                 }
-                tmp += 4;
+                tmp = (void*)(((long)tmp) + sizeof(long));
         }
 
         str = (char*)calloc(size + 1, sizeof(char));
@@ -722,6 +713,80 @@ ptrace_getstr(PyObject *self, PyObject *args)
 
         free(str);
         return obj;
+}
+
+PyDoc_STRVAR(ptrace_getstr__doc__,
+	     "getstr(pid, addr) -> str\n\n"
+	     "Reads a character string stored at given address.");
+
+static PyObject*
+ptrace_getstr(PyObject *self, PyObject *args)
+{
+        pid_t pid = 0;
+        long addr = 0;
+
+        if (!PyArg_ParseTuple(args, "ik", &pid, &addr))
+                return NULL;
+
+        return _ptrace_getstr(pid, (void*)addr);
+}
+
+PyDoc_STRVAR(ptrace_getstrv__doc__,
+	     "getstr(pid, addr) -> []\n\n"
+	     "Reads an array of character strings stored at given\n"
+             "address.");
+
+static PyObject*
+ptrace_getstrv(PyObject *self, PyObject *args)
+{
+        pid_t pid = 0;
+        long addr = 0;
+        long result = 0;
+        void *tmp = NULL;
+        PyObject *str = NULL;
+        PyObject *list = NULL;
+        int err = 0;
+
+        if (!PyArg_ParseTuple(args, "ik", &pid, &addr))
+                return NULL;
+
+        list = PyList_New(0);
+        if (list == NULL)
+                return NULL;
+
+        tmp = (void*)addr;
+
+        while (1) {
+                errno = 0;
+                result = ptrace(PTRACE_PEEKDATA, pid, tmp, NULL);
+                if (errno != 0) {
+                        err = 1;
+                        break;
+                }
+
+                if (!result)
+                        break;
+
+                str = _ptrace_getstr(pid, (void*)result);
+                if (str == NULL) {
+                        err = 2;
+                        break;
+                }
+
+                if (PyList_Append(list, str) == -1) {
+                        err = 3;
+                        break;
+                }
+
+                tmp = (void*)(((long)tmp) + sizeof(long));
+        }
+
+        if (err != 0) {
+                Py_DECREF(list);
+                return (err == 1)? PyErr_SetFromErrno(PyExc_OSError): NULL;
+        }
+
+        return list;
 }
 
 static PyMethodDef
@@ -744,6 +809,7 @@ ptraceminus_methods[] = {
         { "getregs", ptrace_getregs, METH_VARARGS, ptrace_getregs__doc__ },
         { "getscnr", ptrace_getscnr, METH_VARARGS, ptrace_getscnr__doc__ },
         { "getstr", ptrace_getstr, METH_VARARGS, ptrace_getstr__doc__ },
+        { "getstrv", ptrace_getstrv, METH_VARARGS, ptrace_getstrv__doc__ },
         { NULL, NULL, 0, NULL },
 };
 
