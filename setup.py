@@ -19,8 +19,9 @@
 #
 
 import os
-from distutils.core import setup, Extension
-from disthelpers import build, build_trans, build_man, install_data
+from setuptools import setup, find_packages, Extension
+from disthelpers import extract_messages, init_catalog, update_catalog
+from disthelpers import build, build_catalog, build_man
 from ptraceplus import __version__
 
 major, minor, micro = __version__.split('.')
@@ -44,16 +45,19 @@ setup(name='python-ptraceplus',
                    'Natural Language :: English'
                    'License :: OSI Approved :: GNU General Public License (GPL)',),
       keywords=['ptrace'],
-      requires=['docutils (>=0.11)'],
+      install_requires=['docutils >=0.11'],
       packages=['ptraceplus'],
       scripts=['scripts/ptraceplus'],
-      data_files=[('share/man/man1', ['build/man/man1/ptraceplus.1'])],
+      data_files=[],
+      include_package_data=True,
       author='Eric Le Bihan',
       author_email='eric.le.bihan.dev@free.fr',
       ext_modules=[ptraceminus],
-      cmdclass = {'build': build,
-                  'build_man': build_man,
-                  'build_trans': build_trans,
-                  'install_data': install_data})
+      cmdclass={'build': build,
+                'build_man': build_man,
+                'extract_messages': extract_messages,
+                'init_catalog': init_catalog,
+                'update_catalog': update_catalog,
+                'build_catalog': build_catalog})
 
 # vim: ts=4 sts=4 sw=4 sta et ai
