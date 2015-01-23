@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # python-ptraceplus - Ptrace bindings + extra stuff
