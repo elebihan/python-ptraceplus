@@ -29,6 +29,9 @@ if platform.system() == 'Linux':
     if platform.machine() in ('i386', 'i486', 'i586', 'i686'):
         from .linux.x86.names import SYSCALL_NAMES
         from .linux.x86.syscall import SyscallLinux as Syscall
+    elif platform.machine() in ('x86_64'):
+        from .linux.x86_64.names import SYSCALL_NAMES
+        from .linux.x86_64.syscall import SyscallLinux as Syscall
     else:
         raise RuntimeError(_('Unsupported architecture'))
 else:

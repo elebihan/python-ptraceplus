@@ -39,8 +39,8 @@
 #endif
 
 /* TODO: support other architectures */
-#ifndef ARCH_X86
-#error "Only x86 is supported"
+#if !defined(ARCH_X86) && !defined(ARCH_X86_64)
+#error "Only x86/x86_64 architecture are supported"
 #endif
 
 enum {
@@ -55,6 +55,14 @@ static char *x86_reg_names[] = {
         "orig_eax", "eip", "xcs", "eflags", "esp", "xss",
 };
 
+static char *x86_64_reg_names[] = {
+        "r15", "r14", "r13", "r12", "rbp", "rbx", "r11",
+	"r10", "r9", "r8", "rax", "rcx", "rdx", "rsi",
+	"rdi", "orig_rax", "rip", "cs", "eflags",
+	"rsp", "ss", "fs_base", "gs_base", "ds",
+	"es", "fs", "gs",
+};
+
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
 typedef struct RegisterStore {
@@ -67,24 +75,29 @@ static int
 RegisterStore_init(RegisterStore *self, PyObject *args, PyObject *kwds)
 {
         RegisterStore *store = (RegisterStore*)self;
-        int err;
+	char **reg_names = NULL;
+	int err;
         int i;
 
 #if defined(ARCH_X86)
         self->cpu_type = CPU_TYPE_X86;
+	reg_names = x86_reg_names;
+#elif defined(ARCH_X86_64)
+        self->cpu_type = CPU_TYPE_X86_64;
+	reg_names = x86_64_reg_names;
 #else
         self->cpu_type = CPU_TYPE_UNKNOWN;
 #endif
 
-        for (i = 0; i < ARRAY_SIZE(x86_reg_names); i++) {
-                 err = PyDict_SetItemString(store->regs,
-                                            x86_reg_names[i],
-                                            PyLong_FromLong(0));
-                 if (err != 0)
-                         goto fail;
-        }
+	for (i = 0; i < ARRAY_SIZE(x86_reg_names); i++) {
+		err = PyDict_SetItemString(store->regs,
+					   reg_names[i],
+					   PyLong_FromLong(0));
+		if (err != 0)
+			goto fail;
+	}
 
-        return 0;
+	return 0;
 
 fail:
         Py_XDECREF(store->regs);
@@ -109,9 +122,9 @@ RegisterStore_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 
         self->regs = PyDict_New();
         if (self->regs == NULL) {
-                Py_DECREF(self);
-                return NULL;
-        }
+		Py_DECREF(self);
+		return NULL;
+	}
 
         return (PyObject*)self;
 }
@@ -135,7 +148,7 @@ RegisterStore_get_names(RegisterStore *self, void *closure)
         return result;
 }
 
-static int
+static Py_ssize_t
 RegisterStore_len(PyObject *self)
 {
         RegisterStore *store = (RegisterStore*)self;
@@ -149,14 +162,14 @@ RegisterStore_getitem(PyObject *self, PyObject *key)
         PyObject *item = NULL;
 
         if (!PyUnicode_Check(key)) {
-                PyErr_SetString(PyExc_TypeError, "Key must be a string");
-                return NULL;
-        }
+		PyErr_SetString(PyExc_TypeError, "Key must be a string");
+		return NULL;
+	}
 
         if (PyDict_Contains(store->regs, key) != 1) {
-                PyErr_SetString(PyExc_KeyError, "Invalid register name");
-                return NULL;
-        }
+		PyErr_SetString(PyExc_KeyError, "Invalid register name");
+		return NULL;
+	}
 
         item = PyDict_GetItem(store->regs, key);
         Py_INCREF(item);
@@ -170,19 +183,19 @@ RegisterStore_setitem(PyObject *self, PyObject *key, PyObject *value)
         RegisterStore *store = (RegisterStore*)self;
 
         if (!PyUnicode_Check(key)) {
-                PyErr_SetString(PyExc_TypeError, "Key must be a string");
-                return 1;
-        }
+		PyErr_SetString(PyExc_TypeError, "Key must be a string");
+		return 1;
+	}
 
         if (!PyLong_Check(value)) {
-                PyErr_SetString(PyExc_TypeError, "Value must be an integer");
-                return 1;
-        }
+		PyErr_SetString(PyExc_TypeError, "Value must be an integer");
+		return 1;
+	}
 
         if (PyDict_Contains(store->regs, key) != 1) {
-                PyErr_SetString(PyExc_KeyError, "Invalid register name");
-                return 1;
-        }
+		PyErr_SetString(PyExc_KeyError, "Invalid register name");
+		return 1;
+	}
 
         return PyDict_SetItem(store->regs, key, value);
 }
@@ -201,33 +214,33 @@ RegisterStore_str(PyObject *self)
         long regval = 0;
 
         while (PyDict_Next(store->regs, &pos, &key, &value)) {
-                bytes = PyUnicode_AsASCIIString(key);
-                length += PyBytes_Size(bytes) + 1 + 2 + sizeof(long) * 2 + 1;
-                Py_DECREF(bytes);
-        }
+		bytes = PyUnicode_AsASCIIString(key);
+		length += PyBytes_Size(bytes) + 1 + 2 + sizeof(long) * 2 + 1;
+		Py_DECREF(bytes);
+	}
 
         str = (char*)calloc(length + 1, sizeof(char));
         if (str == NULL) {
-                PyErr_SetString(PyExc_MemoryError,
-                                "not enough memory for string");
-                return NULL;
-        }
+		PyErr_SetString(PyExc_MemoryError,
+				"not enough memory for string");
+		return NULL;
+	}
 
         tmp = str;
         pos = 0;
 
         while (PyDict_Next(store->regs, &pos, &key, &value)) {
-                bytes = PyUnicode_AsASCIIString(key);
-                size = PyBytes_Size(bytes) + 1 + 2 + sizeof(long) * 2 + 1;
-                regval = PyLong_AsLong(value);
-                snprintf(tmp,
-                         size + 1,
-                         "%s=0x%08x ",
-                         PyBytes_AsString(bytes),
-                         (unsigned int)regval);
-                Py_DECREF(bytes);
-                tmp += size;
-        }
+		bytes = PyUnicode_AsASCIIString(key);
+		size = PyBytes_Size(bytes) + 1 + 2 + sizeof(long) * 2 + 1;
+		regval = PyLong_AsLong(value);
+		snprintf(tmp,
+			 size + 1,
+			 "%s=0x%08x ",
+			 PyBytes_AsString(bytes),
+			 (unsigned int)regval);
+		Py_DECREF(bytes);
+		tmp += size;
+	}
 
         obj = PyUnicode_FromStringAndSize(str, length - 1);
 
@@ -238,7 +251,7 @@ RegisterStore_str(PyObject *self)
 static PyMemberDef
 RegisterStore_members[] = {
         { "_regs", T_OBJECT, offsetof(RegisterStore, regs), 0,
-          "Registers of the CPU" },
+	  "Registers of the CPU" },
         { NULL },
 };
 
@@ -250,37 +263,37 @@ RegisterStore_methods[] = {
 static PyGetSetDef
 RegisterStore_getseters[] = {
         { "cpu_type",
-          (getter)RegisterStore_get_cpu_type,
-          NULL,
-          "CPU type",
-          NULL
-        },
+	  (getter)RegisterStore_get_cpu_type,
+	  NULL,
+	  "CPU type",
+	  NULL
+	},
         { "names",
-          (getter)RegisterStore_get_names,
-          NULL,
-          "Names of the registers",
-          NULL
-        },
+	  (getter)RegisterStore_get_names,
+	  NULL,
+	  "Names of the registers",
+	  NULL
+	},
         { NULL },
 };
 
 static PyMappingMethods RegisterStore_as_mapping = {
-        RegisterStore_len,
-        RegisterStore_getitem,
-        RegisterStore_setitem,
+	RegisterStore_len,
+	RegisterStore_getitem,
+	RegisterStore_setitem,
 };
 
 static PyTypeObject
 RegisterStoreType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        "ptraceminus.RegisterStore",                    /* tp_name */
-        sizeof(RegisterStore),                          /* tp_basicsize */
-        0,                                              /* tp_itemsize */
-        (destructor)RegisterStore_dealloc,              /* tp_dealloc */
-        0,                                              /* tp_print */
-        0,                                              /* tp_getattr */
-        0,                                              /* tp_setattr */
-        0,                                              /* tp_compare */
+	"ptraceminus.RegisterStore",                    /* tp_name */
+	sizeof(RegisterStore),                          /* tp_basicsize */
+	0,                                              /* tp_itemsize */
+	(destructor)RegisterStore_dealloc,              /* tp_dealloc */
+	0,                                              /* tp_print */
+	0,                                              /* tp_getattr */
+	0,                                              /* tp_setattr */
+	0,                                              /* tp_compare */
         0,                                              /* tp_repr */
         0,                                              /* tp_as_number */
         0,                                              /* tp_as_sequence */
@@ -599,7 +612,8 @@ ptrace_getregs(PyObject *self, PyObject *args)
                 return NULL;
 
         /* TODO: support other architectures */
-        PyDict_SetItemString(store->regs, "ebx", PyLong_FromLong(regs.ebx));
+#if defined(ARCH_X86)
+	PyDict_SetItemString(store->regs, "ebx", PyLong_FromLong(regs.ebx));
         PyDict_SetItemString(store->regs, "ecx", PyLong_FromLong(regs.ecx));
         PyDict_SetItemString(store->regs, "edx", PyLong_FromLong(regs.edx));
         PyDict_SetItemString(store->regs, "esi", PyLong_FromLong(regs.esi));
@@ -615,8 +629,37 @@ ptrace_getregs(PyObject *self, PyObject *args)
         PyDict_SetItemString(store->regs, "eflags", PyLong_FromLong(regs.eflags));
         PyDict_SetItemString(store->regs, "esp", PyLong_FromLong(regs.esp));
         PyDict_SetItemString(store->regs, "xss", PyLong_FromLong(regs.xss));
+#elif defined(ARCH_X86_64)
+        PyDict_SetItemString(store->regs, "r15", PyLong_FromLongLong(regs.r15));
+        PyDict_SetItemString(store->regs, "r14", PyLong_FromLongLong(regs.r14));
+        PyDict_SetItemString(store->regs, "r13", PyLong_FromLongLong(regs.r13));
+        PyDict_SetItemString(store->regs, "r12", PyLong_FromLongLong(regs.r12));
+        PyDict_SetItemString(store->regs, "rbp", PyLong_FromLongLong(regs.rbp));
+        PyDict_SetItemString(store->regs, "rbx", PyLong_FromLongLong(regs.rbx));
+        PyDict_SetItemString(store->regs, "r11", PyLong_FromLongLong(regs.r11));
+        PyDict_SetItemString(store->regs, "r10", PyLong_FromLongLong(regs.r10));
+        PyDict_SetItemString(store->regs, "r9", PyLong_FromLongLong(regs.r9));
+        PyDict_SetItemString(store->regs, "r8", PyLong_FromLongLong(regs.r8));
+        PyDict_SetItemString(store->regs, "rax", PyLong_FromLongLong(regs.rax));
+        PyDict_SetItemString(store->regs, "rcx", PyLong_FromLongLong(regs.rcx));
+        PyDict_SetItemString(store->regs, "rdx", PyLong_FromLongLong(regs.rdx));
+        PyDict_SetItemString(store->regs, "rsi", PyLong_FromLongLong(regs.rsi));
+        PyDict_SetItemString(store->regs, "rdi", PyLong_FromLongLong(regs.rdi));
+        PyDict_SetItemString(store->regs, "orig_rax", PyLong_FromLongLong(regs.orig_rax));
+        PyDict_SetItemString(store->regs, "rip", PyLong_FromLongLong(regs.rip));
+        PyDict_SetItemString(store->regs, "cs", PyLong_FromLongLong(regs.cs));
+        PyDict_SetItemString(store->regs, "eflags", PyLong_FromLongLong(regs.eflags));
+        PyDict_SetItemString(store->regs, "rsp", PyLong_FromLongLong(regs.rsp));
+        PyDict_SetItemString(store->regs, "ss", PyLong_FromLongLong(regs.ss));
+        PyDict_SetItemString(store->regs, "fs_base", PyLong_FromLongLong(regs.fs_base));
+        PyDict_SetItemString(store->regs, "gs_base", PyLong_FromLongLong(regs.gs_base));
+        PyDict_SetItemString(store->regs, "ds", PyLong_FromLongLong(regs.ds));
+        PyDict_SetItemString(store->regs, "es", PyLong_FromLongLong(regs.es));
+        PyDict_SetItemString(store->regs, "fs", PyLong_FromLongLong(regs.fs));
+        PyDict_SetItemString(store->regs, "gs", PyLong_FromLongLong(regs.gs));
+#endif
 
-        return (PyObject*)store;
+	return (PyObject*)store;
 }
 
 PyDoc_STRVAR(ptrace_getscnr__doc__,
@@ -635,6 +678,8 @@ ptrace_getscnr(PyObject *self, PyObject *args)
 
 #if defined(ARCH_X86)
         addr = 4 * ORIG_EAX;
+#elif defined(ARCH_X86_64)
+        addr = 8 * ORIG_RAX;
 #endif
         errno = 0;
         result = ptrace(PTRACE_PEEKUSER, pid, addr, NULL);
