@@ -33,7 +33,7 @@ SYSCALL_NAMES = {
     7: "poll",
     8: "lseek",
     9: "mmap",
-    0: "mprotect",
+    10: "mprotect",
     11: "munmap",
     12: "brk",
     13: "rt_sigaction",
