@@ -25,6 +25,7 @@ Collections of tracers
 import os
 from .tracerplus import TracerPlus
 from .syscalls.helpers import format_syscall, convert_names
+from .common import debug
 from gettext import gettext as _
 
 class TracerStats:
@@ -89,6 +90,7 @@ class SyscallTracer(TracerPlus):
             self._log(str(event))
 
     def _on_syscall_enter(self, syscall):
+        debug("Entering syscall {}".format(syscall.num))
         if syscall.name == 'execve':
             params = syscall.collect_params()
             for name in self._progs:
@@ -105,6 +107,7 @@ class SyscallTracer(TracerPlus):
             self._log(txt.format(syscall.pid, format_syscall(syscall, True)))
 
     def _on_syscall_exit(self, syscall):
+        debug("Exiting syscall {}".format(syscall.num))
         wanted = self._check_wanted_syscall(syscall)
         if self._full or wanted:
             res = syscall.collect_result()
