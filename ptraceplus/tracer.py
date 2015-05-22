@@ -104,26 +104,34 @@ class Tracer(object):
                               from kernel space. It is unset if it comes
                               from user space""")
 
-    def spawn_process(self, args, env=None):
+    def spawn_process(self, args, env=None, quiet=True):
         flags = 0
-        pid = spawn_child(args, env)
+        pid = spawn_child(args, env, quiet)
         pid, status = os.waitpid(pid, flags)
         proc = self.add_process(pid)
-        proc.cont()
+        proc.syscall()
         return proc
 
     def add_process(self, pid, is_attached=True, parent=None):
         if pid in self._procs:
             raise TracerError(_('Process {} already registered').format(pid))
         debug(_("Adding process {}").format(pid))
-        proc = self.remember_process(pid, parent)
+        proc = self.keep_process(pid, parent)
         if not is_attached:
             proc.attach()
         proc.options = self._options
         return proc
 
-    def remember_process(self, pid, parent=None):
-        debug(_("Remembering process {}").format(pid))
+    def keep_process(self, pid, parent=None):
+        if pid in self._procs:
+            debug(_("Remembering process {}").format(pid))
+            return self._procs[pid]
+
+        if parent:
+            details = "({})".format(parent.pid)
+        else:
+            details = ''
+        debug(_("Keeping process {} {}").format(pid, details))
         proc = TracedProcess(pid, parent)
         self._procs[pid] = proc
         return proc
@@ -138,7 +146,7 @@ class Tracer(object):
         proc.detach()
         debug(_("{} processes still traced").format(len(self._procs)))
 
-    def _wait_for_event(self, wanted_pid, blocking=True):
+    def wait_for_event(self, wanted_pid=None, blocking=True):
         flags = 0
         if not blocking:
             flags |= os.WNOHANG
@@ -151,17 +159,13 @@ class Tracer(object):
     def wait_for_signal(self, *signals, **kwargs):
         pid = kwargs.get('pid', None)
         while True:
-            event = self._wait_for_event(pid)
+            event = self.wait_for_event(pid)
             if isinstance(event, SignalEvent):
                 if event.signum in signals or not signals:
                     return event
-            return event
 
     def wait_for_syscall(self, pid=None):
-        signum = signal.SIGTRAP
-        if self._sysgood_enabled:
-            signum |= 0x80
-        return self.wait_for_signal(signum, pid)
+        return self.wait_for_signal(signal.SIGTRAP, pid)
 
     def quit(self):
         while self._procs:

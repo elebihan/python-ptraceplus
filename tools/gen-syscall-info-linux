@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# python-ptraceplus - Ptrace bindings + extra stuff
+#
+# Copyright (c) 2013 Eric Le Bihan <eric.le.bihan.dev@free.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+"""
+Helper tool to get the list of syscalls for Linux.
+
+It generates two files, to be include in Python code:
+
+- names.py: a mapping between a syscall number and its function name.
+- prototypes.py: a mapping between a syscall function name and its arguments.
+
+The generated files have to be edited manually to remove duplicates (check
+'clone()').
+
+It currently only works for x86 architecture.
+"""
+import os
+import re
+import argparse
+import subprocess
+
+class GeneratorError(Exception):
+    """Error raised when the generator fails"""
+
+class SyscallInfoGenerator(object):
+    """Generate Linux syscall information for x86 architecture from
+    source code.
+
+    :param directory: path to Linux source code.
+    :type directory: str.
+
+    :param filename: path to unistd.h.
+    :type filename: str.
+    """
+    def __init__(self, directory, filename):
+        self._src = directory
+        self._unistd = filename
+
+    def generate(self):
+        """Generate information"""
+        p_fn = self._gen_protos()
+        n_fn = self._gen_names()
+        return n_fn, p_fn
+
+    def _gen_tags(self):
+        tags_fn = os.path.join(self._src, 'tags')
+        if not os .path.exists(tags_fn):
+            with open(os.devnull, 'w') as f:
+                args = ('make', '-C', self._src, 'tags')
+                rc = subprocess.call(args, stdout=f)
+                if rc != 0:
+                    raise GeneratorError('Failed to build TAG file')
+        return tags_fn
+
+    def _gen_protos(self):
+        protos_fn = 'prototypes.py'
+        files = []
+        regex = re.compile(r'^SYSCALL_DEFINE\d+\((.+)')
+        with open(self._gen_tags(), 'r') as f:
+            for line in f:
+                tag, fn, *stuff = line.split()
+                if tag.startswith('SYSCALL_DEFINE'):
+                    files.append(fn)
+        with open(protos_fn, 'w') as o:
+            o.write("SYSCALL_PROTOS = {\n")
+            for fn in map(lambda f: os.path.join(self._src, f), set(files)):
+                with open(fn, 'r') as f:
+                    for line in f:
+                        m = regex.match(line.strip())
+                        if not m:
+                            continue
+                        text = m.group(1)
+                        if not text.endswith(';'):
+                            text += next(f).strip()
+                        text = text.replace(' __user *', '*')
+                        name, *fields = text[:-2].split(',')
+                        if len(fields) % 2 != 0:
+                            raise GeneratorError('Invalid syscall prototype')
+                        args = []
+                        fields = [f.strip() for f in fields]
+                        for i in range(0, len(fields) - 1, 2):
+                            args.append((fields[i], fields[i + 1]))
+                        text = "    '{}': {},\n".format(name, args)
+                        o.write(text)
+            o.write("}\n")
+        return protos_fn
+
+    def _gen_names(self):
+        names_fn = 'names.py'
+        regex = re.compile('^#define\s__NR_(\w+)\s+(\d+)')
+        with open(names_fn, 'w') as o:
+            o.write("SYSCALL_NAMES = {\n")
+            with open(self._unistd, 'r') as f:
+                for line in f:
+                    m = regex.match(line.strip())
+                    if m:
+                        text = "    {}: '{}',\n"
+                        text = text.format(m.group(2), m.group(1))
+                        o.write(text)
+            o.write("}\n")
+        return names_fn
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('directory',
+                        help='path to Linux source code')
+    parser.add_argument('filename',
+                        help='path to Linux unistd.h')
+    args = parser.parse_args()
+
+    gen = SyscallInfoGenerator(args.directory, args.filename)
+    n_fn, p_fn = gen.generate()
+
+    print("Generated {}".format(n_fn))
+    print("Generated {}".format(p_fn))
+
+# vim: ts=4 sts=4 sw=4 sta et ai
