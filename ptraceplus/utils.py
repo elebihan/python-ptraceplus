@@ -34,8 +34,10 @@ try:
 except:
     __MAXFD = 256
 
+
 class SpawnError(Exception):
     """Error raised when child can not be spawned"""
+
 
 def find_program(program):
     """Try to find a program in $PATH.
@@ -56,7 +58,8 @@ def find_program(program):
             return filename
     raise SpawnError(_('Program not found'))
 
-def spawn_child(arguments, env=None):
+
+def spawn_child(arguments, env=None, quiet=True):
     """Spawn a child process.
 
     :param arguments: arguments of the child program.
@@ -85,6 +88,16 @@ def spawn_child(arguments, env=None):
                 os.close(fd)
             except OSError:
                 pass
+
+        if quiet:
+            try:
+                null = open(os.devnull, 'wb')
+                os.dup2(null.fileno(), 1)
+                os.dup2(1, 2)
+                null.close()
+            except IOError:
+                os.close(2)
+                os.close(1)
 
         os.kill(os.getpid(), signal.SIGSTOP)
 

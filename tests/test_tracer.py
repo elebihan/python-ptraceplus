@@ -23,6 +23,7 @@ import unittest
 from ptraceplus.tracer import Tracer
 from common import gen_test_progs, DATA_DIR
 
+
 class TestTracerBasic(unittest.TestCase):
     """Basic Tracer tests"""
 
@@ -41,6 +42,7 @@ class TestTracerBasic(unittest.TestCase):
 
     def tearDown(self):
         self._tracer.quit()
+
 
 class TestTracerSpawn(unittest.TestCase):
     """Process spawing tests"""

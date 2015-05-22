@@ -30,6 +30,7 @@ from docutils.core import publish_file
 import os
 import subprocess
 
+
 class extract_messages(cmd.Command):
     description = 'extract localizable strings from source code'
     user_options = []
@@ -49,6 +50,7 @@ class extract_messages(cmd.Command):
             '--package-name', self.distribution.get_name(),
         ]
         subprocess.check_call(args)
+
 
 class init_catalog(cmd.Command):
     description = 'create a new catalog based on a POT file'
@@ -73,6 +75,7 @@ class init_catalog(cmd.Command):
         ]
         subprocess.check_call(args)
 
+
 class update_catalog(cmd.Command):
     description = 'update an existing catalog from a POT file'
     user_options = [
@@ -92,6 +95,7 @@ class update_catalog(cmd.Command):
         po_file = os.path.join(os.curdir, 'po', self.locale + '.po')
         args = ['msgmerge', '--update', po_file, pot_file]
         subprocess.check_call(args)
+
 
 class build_catalog(cmd.Command):
     description = 'compile *.po file into *.mo file'
@@ -131,8 +135,9 @@ class build_catalog(cmd.Command):
             locale_dir = os.path.join('share', 'locale', locale, 'LC_MESSAGES')
             self.distribution.data_files.append((locale_dir, [dst]))
 
+
 class build_man(cmd.Command):
-    description = 'build MAN page from restructuredtext'
+    description = 'build MAN page from ReStructuredText'
 
     def initialize_options(self):
         pass
@@ -157,6 +162,7 @@ class build_man(cmd.Command):
                                  writer_name='manpage')
                     man_dir = os.path.join('share', 'man', 'man' + section)
                     self.distribution.data_files.append((man_dir, [dst]))
+
 
 class build(_build):
     sub_commands = _build.sub_commands

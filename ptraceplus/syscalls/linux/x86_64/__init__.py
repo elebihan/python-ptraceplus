@@ -2,7 +2,7 @@
 #
 # python-ptraceplus - Ptrace bindings + extra stuff
 #
-# Copyright (c) 2013 Eric Le Bihan <eric.le.bihan.dev@free.fr>
+# Copyright (c) 2015 Eric Le Bihan <eric.le.bihan.dev@free.fr>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,15 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
-import subprocess
-
-_TEST_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(_TEST_DIR, 'data')
-
-
-def gen_test_progs():
-    with open(os.devnull) as f:
-        subprocess.call(['make', '-C', DATA_DIR], stdout=f, stderr=f)
+"""
+Syscalls definitions (Linux/x86_64)
+"""
 
 # vim: ts=4 sts=4 sw=4 sta et ai

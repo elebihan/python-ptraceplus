@@ -18,15 +18,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
-import subprocess
+"""
+Collects information about a system call (Linux, x86)
+"""
 
-_TEST_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(_TEST_DIR, 'data')
+from .names import SYSCALL_NAMES
+from ..prototypes import SYSCALL_PROTOS
+from ...core import Syscall
 
 
-def gen_test_progs():
-    with open(os.devnull) as f:
-        subprocess.call(['make', '-C', DATA_DIR], stdout=f, stderr=f)
+class SyscallLinux(Syscall):
+
+    def _get_name(self):
+        return SYSCALL_NAMES[self.num]
+
+    def _get_proto(self):
+        return SYSCALL_PROTOS[self.name]
+
+    def _get_result_from_regs(self, regs):
+        return regs['eax']
+
+    def _get_params_from_regs(self, regs):
+        values = (regs['ebx'], regs['ecx'], regs['edx'],
+                  regs['esi'], regs['edi'], regs['ebp'])
+        return [v & 0xffffffff for v in values]
 
 # vim: ts=4 sts=4 sw=4 sta et ai
