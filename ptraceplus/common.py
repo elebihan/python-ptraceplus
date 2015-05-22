@@ -41,6 +41,7 @@ except:
 __logger = logging.getLogger('ptraceplus')
 __logger.setLevel(__level)
 
+
 def debug(message):
     """Log a debug message.
 
@@ -51,6 +52,7 @@ def debug(message):
     :type message: str.
     """
     __logger.debug(message)
+
 
 def setup_i18n():
     """Set up internationalization."""

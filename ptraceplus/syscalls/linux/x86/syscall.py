@@ -26,6 +26,7 @@ from .names import SYSCALL_NAMES
 from ..prototypes import SYSCALL_PROTOS
 from ...core import Syscall
 
+
 class SyscallLinux(Syscall):
 
     def _get_name(self):

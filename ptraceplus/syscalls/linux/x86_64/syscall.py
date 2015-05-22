@@ -26,6 +26,7 @@ from .names import SYSCALL_NAMES
 from ..prototypes import SYSCALL_PROTOS
 from ...core import Syscall
 
+
 class SyscallLinux(Syscall):
 
     def _get_name(self):
@@ -40,6 +41,6 @@ class SyscallLinux(Syscall):
     def _get_params_from_regs(self, regs):
         values = (regs['rdi'], regs['rsi'], regs['rdx'],
                   regs['r10'], regs['r8'], regs['r9'])
-        return [v & 0xffffffffffffffff  for v in values]
+        return [v & 0xffffffffffffffff for v in values]
 
 # vim: ts=4 sts=4 sw=4 sta et ai

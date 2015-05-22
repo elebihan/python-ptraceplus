@@ -31,8 +31,10 @@ from .process import TracedProcess, create_process_event, SignalEvent
 from .utils import spawn_child
 from .common import debug
 
+
 class TracerError(Exception):
     """Error raised when a tracing operation failed"""
+
 
 class Tracer(object):
     """Trace a process"""
@@ -98,11 +100,11 @@ class Tracer(object):
         return self._sysgood_enabled
 
     sysgood_enabled = property(_get_sysgood_enabled, _set_sysgood_enabled,
-                              None,
-                              """Enable sysgood: ask the kernel to set bit
-                              #7 of the signal number if the signal comes
-                              from kernel space. It is unset if it comes
-                              from user space""")
+                               None,
+                               """Enable sysgood: ask the kernel to set bit
+                               #7 of the signal number if the signal comes
+                               from kernel space. It is unset if it comes
+                               from user space""")
 
     def spawn_process(self, args, env=None, quiet=True):
         flags = 0

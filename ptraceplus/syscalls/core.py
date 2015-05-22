@@ -37,8 +37,10 @@ _SYSCALL_STATES = {
 (SYSCALL_PARAM_TYPE_STR, SYSCALL_PARAM_TYPE_STRV, SYSCALL_PARAM_TYPE_ADDR,
  SYSCALL_PARAM_TYPE_NB) = range(0, 4)
 
+
 class SyscallParamError(Exception):
     """Error raised when collecting system call parameter fails"""
+
 
 class SyscallParam(object):
     """Represents a Syscall parameter.
@@ -102,6 +104,7 @@ class SyscallParam(object):
             return True
         else:
             return False
+
 
 class Syscall(object):
     """Represents a system call.

@@ -24,6 +24,7 @@ import subprocess
 _TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(_TEST_DIR, 'data')
 
+
 def gen_test_progs():
     with open(os.devnull) as f:
         subprocess.call(['make', '-C', DATA_DIR], stdout=f, stderr=f)

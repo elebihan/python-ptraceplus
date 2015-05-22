@@ -29,8 +29,10 @@ from gettext import gettext as _
 from .common import debug
 from .syscalls.helpers import create_syscall
 
+
 class UnknownEventError(Exception):
     """Error raised when process status can not be decoded"""
+
 
 class ProcessEvent(object):
     """Event occuring during process execution"""
@@ -44,6 +46,7 @@ class ProcessEvent(object):
     def __str__(self):
         return "ProcessEvent<{}>".format(self._pid)
 
+
 class ExecutionEvent(ProcessEvent):
     """Event indicating the execution of a process"""
     def __init__(self, pid):
@@ -51,6 +54,7 @@ class ExecutionEvent(ProcessEvent):
 
     def __str__(self):
         return _("[{}] starting").format(self._pid)
+
 
 class ForkEvent(ProcessEvent):
     """Event indicating a process has forked"""
@@ -64,6 +68,7 @@ class ForkEvent(ProcessEvent):
 
     def __str__(self):
         return _("[{}] forked as {}").format(self._pid, self._cpid)
+
 
 class SignalEvent(ProcessEvent):
     """Process received a signal during execution"""
@@ -92,6 +97,7 @@ class SignalEvent(ProcessEvent):
         desc = _("[{}] received signal {} {}")
         return desc.format(self._pid, self._signum, extra)
 
+
 class ExitingEvent(ProcessEvent):
     """Process is about to exit"""
     def __init__(self, pid, status):
@@ -105,6 +111,7 @@ class ExitingEvent(ProcessEvent):
     def __str__(self):
         desc = _("[{}] is about to exit with status {}")
         return desc.format(self._pid, self._status)
+
 
 class ExitedEvent(ProcessEvent):
     """Process has exited"""
@@ -120,6 +127,7 @@ class ExitedEvent(ProcessEvent):
         desc = _("[{}] has exited with code {}")
         return desc.format(self._pid, self._code)
 
+
 class KilledEvent(ProcessEvent):
     """Process was terminated by a signal"""
     def __init__(self, pid, signum):
@@ -133,6 +141,7 @@ class KilledEvent(ProcessEvent):
     def __str__(self):
         desc = _("[{}] killed by signal {}")
         return desc.format(self._pid, self._signum)
+
 
 def create_process_event(pid, status):
     """Create a process event from PID and status.
@@ -172,6 +181,7 @@ def create_process_event(pid, status):
         msg = _("Unknown event for {} ({})")
         raise UnknownEventError(msg.format(pid, status))
     return event
+
 
 class TracedProcess(object):
     """Process traced by a tracer.

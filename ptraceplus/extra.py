@@ -28,6 +28,7 @@ from .syscalls.helpers import format_syscall, convert_names
 from .common import debug
 from gettext import gettext as _
 
+
 class TracerStats:
     __slots__ = ['n_traced', 'n_filtered', 'results']
 
@@ -35,6 +36,7 @@ class TracerStats:
         self.n_traced = nt
         self.n_filtered = nf
         self.results = r
+
 
 class SyscallTracer(TracerPlus):
     def __init__(self, args, quiet=True, full=False, stream=None):
@@ -111,12 +113,14 @@ class SyscallTracer(TracerPlus):
         wanted = self._check_wanted_syscall(syscall)
         if self._full or wanted:
             res = syscall.collect_result()
-            if not syscall.name in self._results:
+            if syscall.name not in self._results:
                 self._results[syscall.name] = 0
             else:
                 self._results[syscall.name] += 1
             txt = "[{}] {} = {}"
-            self._log(txt.format(syscall.pid, format_syscall(syscall, True), res))
+            self._log(txt.format(syscall.pid, format_syscall(syscall, True),
+                                 res))
+
 
 def format_tracer_stats(stats):
     text = "----\n"
@@ -127,6 +131,7 @@ def format_tracer_stats(stats):
     for n, c in stats.results:
         text += " {:<24}: {}\n".format(n, c)
     return text
+
 
 def format_process_info(info, with_files=True):
         text = " - pid: {}\n".format(info.pid)
@@ -142,6 +147,7 @@ def format_process_info(info, with_files=True):
         text += "   code: {}\n".format(info.code)
         return text
 
+
 class ProcessInfo:
     def __init__(self, pid, ppid=0):
         self.pid = pid
@@ -153,6 +159,7 @@ class ProcessInfo:
         self.fname = None
         self.faccess = None
         self.allowed = False
+
 
 class ExecutionTracer(TracerPlus):
     def __init__(self, args, quiet=True, stream=None):
@@ -192,8 +199,8 @@ class ExecutionTracer(TracerPlus):
                 allowed = False
                 for name in self._progs:
                     if prog.endswith(name):
-                       allowed = True
-                       break
+                        allowed = True
+                        break
             else:
                 allowed = True
 
@@ -212,7 +219,7 @@ class ExecutionTracer(TracerPlus):
             if info.allowed:
                 params = syscall.collect_params()
                 info.fname = params[0].pvalue
-                info.faccess =  params[1].value
+                info.faccess = params[1].value
 
     def _on_syscall_exit(self, syscall):
         if syscall.name == 'open' and self.with_files:

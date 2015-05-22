@@ -24,7 +24,8 @@ import argparse
 import logging
 from ptraceplus import __version__
 from ptraceplus.common import setup_i18n
-from ptraceplus.extra import SyscallTracer, format_tracer_stats, ExecutionTracer
+from ptraceplus.extra import SyscallTracer, format_tracer_stats
+from ptraceplus.extra import ExecutionTracer
 from gettext import gettext as _
 
 logging.basicConfig()

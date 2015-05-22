@@ -20,7 +20,7 @@
 #
 
 import os
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, Extension
 from disthelpers import extract_messages, init_catalog, update_catalog
 from disthelpers import build, build_catalog, build_man
 from ptraceplus import __version__
@@ -41,30 +41,39 @@ setup(name='python-ptraceplus',
       license='GPLv3+',
       url='https://github.com/elebihan/python-ptraceplus/',
       platforms=['linux'],
-      classifiers=('Programming Language :: Python :: 3',
-                   'Intended Audience :: Developers',
-                   'Natural Language :: English',
-                   'Development Status :: 2 - Pre-Alpha',
-                   'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',),
-      keywords=['ptrace'],
-      requires=['docutils (>=0.11)'],
-      packages=['ptraceplus',
-                'ptraceplus.syscalls',
-                'ptraceplus.syscalls.linux',
-                'ptraceplus.syscalls.linux.x86',
-                'ptraceplus.syscalls.linux.x86_64',
-                ],
+      classifiers=(
+          'Programming Language :: Python :: 3',
+          'Intended Audience :: Developers',
+          'Natural Language :: English',
+          'Development Status :: 2 - Pre-Alpha',
+          'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+      ),
+      keywords=[
+          'ptrace',
+      ],
+      requires=[
+          'docutils (>=0.11)',
+      ],
+      packages=[
+          'ptraceplus',
+          'ptraceplus.syscalls',
+          'ptraceplus.syscalls.linux',
+          'ptraceplus.syscalls.linux.x86',
+          'ptraceplus.syscalls.linux.x86_64',
+      ],
       scripts=['scripts/ptraceplus'],
       data_files=[],
       include_package_data=True,
       author='Eric Le Bihan',
       author_email='eric.le.bihan.dev@free.fr',
       ext_modules=[ptraceminus],
-      cmdclass={'build': build,
-                'build_man': build_man,
-                'extract_messages': extract_messages,
-                'init_catalog': init_catalog,
-                'update_catalog': update_catalog,
-                'build_catalog': build_catalog})
+      cmdclass={
+          'build': build,
+          'build_man': build_man,
+          'extract_messages': extract_messages,
+          'init_catalog': init_catalog,
+          'update_catalog': update_catalog,
+          'build_catalog': build_catalog
+      })
 
 # vim: ts=4 sts=4 sw=4 sta et ai

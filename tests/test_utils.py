@@ -23,6 +23,7 @@ import unittest
 from ptraceplus import utils
 from common import gen_test_progs, DATA_DIR
 
+
 class TestSpawnChild(unittest.TestCase):
 
     def setUp(self):

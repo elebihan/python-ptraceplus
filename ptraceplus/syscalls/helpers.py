@@ -37,11 +37,14 @@ if platform.system() == 'Linux':
 else:
     raise RuntimeError(_('Unsupported system'))
 
+
 def convert_names(names):
     return [k for k, v in SYSCALL_NAMES.items() if v in names]
 
+
 def create_syscall(pid):
     return Syscall(pid)
+
 
 def format_syscall(syscall, detailed=False):
     if detailed:

@@ -23,6 +23,7 @@ from ptraceplus.tracer import Tracer
 from ptraceplus.process import (SignalEvent, ForkEvent, ExecutionEvent,
                                 ExitingEvent, ExitedEvent, KilledEvent)
 
+
 class TracerPlus(object):
     """Simple process tracer.
 
