@@ -20,7 +20,7 @@
 #
 
 import os
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from disthelpers import extract_messages, init_catalog, update_catalog
 from disthelpers import build, build_catalog, build_man
 from ptraceplus import __version__
@@ -54,16 +54,14 @@ setup(name='python-ptraceplus',
       requires=[
           'docutils (>=0.11)',
       ],
-      packages=[
-          'ptraceplus',
-          'ptraceplus.syscalls',
-          'ptraceplus.syscalls.linux',
-          'ptraceplus.syscalls.linux.x86',
-          'ptraceplus.syscalls.linux.x86_64',
-      ],
-      scripts=['scripts/ptraceplus'],
+      packages=find_packages(),
       data_files=[],
       include_package_data=True,
+      entry_points={
+          'console_scripts': [
+              'ptraceplus = ptraceplus.cli:main',
+          ],
+      },
       author='Eric Le Bihan',
       author_email='eric.le.bihan.dev@free.fr',
       ext_modules=[ptraceminus],

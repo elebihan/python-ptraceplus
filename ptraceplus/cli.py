@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # python-ptraceplus - Ptrace bindings + extra stuff
@@ -32,7 +31,8 @@ logging.basicConfig()
 
 setup_i18n()
 
-if __name__ == '__main__':
+
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--version',
                         action='version',
