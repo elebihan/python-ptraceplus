@@ -22,6 +22,6 @@
 Ptrace bindings + extra stuff
 """
 
-__version__ = '0.1.1'
+__version__ = '0.2.0'
 
 # vim: ts=4 sts=4 sw=4 sta et ai

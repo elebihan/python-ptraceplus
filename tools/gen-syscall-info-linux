@@ -37,8 +37,10 @@ import re
 import argparse
 import subprocess
 
+
 class GeneratorError(Exception):
     """Error raised when the generator fails"""
+
 
 class SyscallInfoGenerator(object):
     """Generate Linux syscall information for x86 architecture from
