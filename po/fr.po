@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: python-ptraceplus 0.1.0\n"
+"Project-Id-Version: python-ptraceplus 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-22 23:34+0200\n"
-"PO-Revision-Date: 2013-11-28 17:39+0100\n"
+"PO-Revision-Date: 2015-05-23 00:14+0200\n"
 "Last-Translator: Eric Le Bihan <eric.le.bihan.dev@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -174,4 +174,4 @@ msgstr "Génération du processus {}"
 
 #: ptraceplus/utils.py:84
 msgid "Failed to trace child process {}"
-msgstr "Impossible de tracer le processus fils"
+msgstr "Impossible de tracer le processus fils {}"
