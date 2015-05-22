@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: python-ptraceplus 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-28 17:38+0100\n"
+"POT-Creation-Date: 2015-05-22 23:34+0200\n"
 "PO-Revision-Date: 2013-11-28 17:39+0100\n"
 "Last-Translator: Eric Le Bihan <eric.le.bihan.dev@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,95 +16,95 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: scripts/ptraceplus:41
+#: ptraceplus/cli.py:42
 msgid "arguments of the program"
 msgstr "arguments du programme"
 
-#: scripts/ptraceplus:46
+#: ptraceplus/cli.py:47
 msgid "trace only execution"
 msgstr "trace seulement l'exécution"
 
-#: scripts/ptraceplus:51
+#: ptraceplus/cli.py:52
 msgid "get arguments during execution"
 msgstr "récupère les arguments lors de l'exécution"
 
-#: scripts/ptraceplus:56
+#: ptraceplus/cli.py:57
 msgid "trace file access during execution"
 msgstr "trace les accès fichiers lors de l'exécution"
 
-#: scripts/ptraceplus:61
+#: ptraceplus/cli.py:62
 msgid "compute some statistics"
 msgstr "calcule des statistiques"
 
-#: scripts/ptraceplus:65
+#: ptraceplus/cli.py:66
 msgid "trace all events"
 msgstr "trace tous les événements"
 
-#: scripts/ptraceplus:68
+#: ptraceplus/cli.py:69
 msgid "set output file"
 msgstr "définit le fichier de sortie"
 
-#: scripts/ptraceplus:74
+#: ptraceplus/cli.py:75
 msgid "filter syscall by name"
 msgstr "filtre un appel système par son nom"
 
-#: scripts/ptraceplus:80
+#: ptraceplus/cli.py:81
 msgid "filter program by name"
 msgstr "filtre un programme par son nom"
 
-#: scripts/ptraceplus:84
+#: ptraceplus/cli.py:85
 msgid "Missing argument(s)"
 msgstr "Argument(s) manquant(s)"
 
-#: scripts/ptraceplus:94
+#: ptraceplus/cli.py:95
 msgid "Error: {}"
 msgstr "Erreur : {}"
 
-#: ptraceplus/extra.py:120
+#: ptraceplus/extra.py:127
 msgid "Number of processes traced: {}\n"
 msgstr "Nombre de processus tracés : {}\n"
 
-#: ptraceplus/extra.py:121
+#: ptraceplus/extra.py:128
 msgid "Number of processes filtered: {}\n"
 msgstr "Nombre de processus filtrés : {}\n"
 
-#: ptraceplus/extra.py:123
+#: ptraceplus/extra.py:130
 msgid "Syscalls statistics:\n"
 msgstr "Statistiques des appels système :\n"
 
-#: ptraceplus/process.py:53
+#: ptraceplus/process.py:56
 msgid "[{}] starting"
 msgstr "[{}] démarre"
 
-#: ptraceplus/process.py:66
+#: ptraceplus/process.py:70
 msgid "[{}] forked as {}"
 msgstr "[{}] forké en {}"
 
-#: ptraceplus/process.py:92
+#: ptraceplus/process.py:97
 msgid "[{}] received signal {} {}"
 msgstr "[{}] a reçu le signal {} {}"
 
-#: ptraceplus/process.py:106
+#: ptraceplus/process.py:112
 msgid "[{}] is about to exit with status {}"
 msgstr "[{}] prêt à se terminer avec le status {}"
 
-#: ptraceplus/process.py:120
+#: ptraceplus/process.py:127
 msgid "[{}] has exited with code {}"
 msgstr "[{}] terminé avec le code {}"
 
-#: ptraceplus/process.py:134
+#: ptraceplus/process.py:142
 msgid "[{}] killed by signal {}"
 msgstr "[{}] tué par le signal {}"
 
-#: ptraceplus/process.py:172
+#: ptraceplus/process.py:181
 msgid "Unknown event for {} ({})"
 msgstr "Évènement inconnu pour {} ({})"
 
-#: ptraceplus/process.py:216
+#: ptraceplus/process.py:226
 msgid "Attaching {}"
 msgstr "Attachement de {}"
 
-#: ptraceplus/process.py:222
+#: ptraceplus/process.py:232
 msgid "Detaching {}"
 msgstr "Détachement de {}"
 
@@ -120,58 +120,58 @@ msgstr "entrée"
 msgid "exit"
 msgstr "sortie"
 
-#: ptraceplus/syscalls/core.py:201
+#: ptraceplus/syscalls/core.py:204
 msgid "can not get '{} {}' for {}() at {:#x}"
 msgstr "impossible de lire '{} {}' pour {}() en {:#x}"
 
-#: ptraceplus/syscalls/helpers.py:33
+#: ptraceplus/syscalls/helpers.py:36
 msgid "Unsupported architecture"
 msgstr "Architecture non supportée"
 
-#: ptraceplus/syscalls/helpers.py:35
+#: ptraceplus/syscalls/helpers.py:38
 msgid "Unsupported system"
 msgstr "Système non supporté"
 
-#: ptraceplus/tracer.py:117
+#: ptraceplus/tracer.py:119
 msgid "Process {} already registered"
 msgstr "Processus {} déjà enregistré"
 
-#: ptraceplus/tracer.py:118
+#: ptraceplus/tracer.py:120
 msgid "Adding process {}"
 msgstr "Ajout du processus {}"
 
-#: ptraceplus/tracer.py:127
+#: ptraceplus/tracer.py:129
 msgid "Remembering process {}"
 msgstr "Rappel du processus {}"
 
-#: ptraceplus/tracer.py:134
+#: ptraceplus/tracer.py:136
 msgid "Keeping process {} {}"
 msgstr "Mémorisation du processus {} {}"
 
-#: ptraceplus/tracer.py:140 ptraceplus/tracer.py:173
+#: ptraceplus/tracer.py:142 ptraceplus/tracer.py:175
 msgid "Removing process {}"
 msgstr "Retrait du processus {}"
 
-#: ptraceplus/tracer.py:144
+#: ptraceplus/tracer.py:146
 msgid "Process not found"
 msgstr "Processus introuvable"
 
-#: ptraceplus/tracer.py:147
+#: ptraceplus/tracer.py:149
 msgid "{} processes still traced"
 msgstr "{} processus toujours tracés"
 
-#: ptraceplus/tracer.py:154
+#: ptraceplus/tracer.py:156
 msgid "Unknown PID ({})"
 msgstr "PID inconnu ({})"
 
-#: ptraceplus/utils.py:57
+#: ptraceplus/utils.py:59
 msgid "Program not found"
 msgstr "Programme introuvable"
 
-#: ptraceplus/utils.py:75
+#: ptraceplus/utils.py:78
 msgid "Spawned process {}"
 msgstr "Génération du processus {}"
 
-#: ptraceplus/utils.py:81
+#: ptraceplus/utils.py:84
 msgid "Failed to trace child process {}"
 msgstr "Impossible de tracer le processus fils"
